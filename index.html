@@ -606,10 +606,55 @@ footer strong {
         gap:10px;
     }
 }
+
+/* ---------- EDUNET APP FEATURES ---------- */
+.app-section{display:block;padding:90px 7%;scroll-margin-top:70px}
+.library-toolbar{display:flex;gap:12px;align-items:center;margin-bottom:22px}
+.library-toolbar .input{margin:0;max-width:500px}
+.content-list{display:grid;gap:14px}
+.content-card{display:flex;align-items:center;gap:16px;padding:18px;border:1px solid var(--border);background:var(--card);border-radius:18px}
+.content-icon{font-size:34px;width:48px;text-align:center}
+.content-main{flex:1;min-width:0}
+.content-main h3{margin-bottom:6px}
+.content-main p{color:var(--muted);font-size:13px}
+.content-actions{display:flex;gap:8px;flex-wrap:wrap}
+.small-btn{padding:8px 12px;border-radius:10px;background:#ffffff0d;color:white;border:1px solid var(--border);cursor:pointer}
+.small-btn:hover{background:#ffffff18}
+.like-btn.liked{border-color:#ec4899;color:#f9a8d4}
+.follow-btn.following{border-color:#22c55e;color:#86efac}
+.course-modal-box{width:650px;max-height:85vh;overflow:auto}
+.lesson-list{display:grid;gap:12px;margin-top:20px}
+.lesson{padding:15px;border:1px solid var(--border);border-radius:14px;background:#ffffff06}
+.lesson strong{display:block;margin-bottom:6px}
+.lesson span{color:var(--muted);font-size:14px;line-height:1.6}
+.profile-card{padding:28px;border:1px solid var(--border);background:var(--card);border-radius:22px;max-width:720px}
+.profile-head{display:flex;gap:16px;align-items:center;margin-bottom:20px}
+.profile-avatar{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#a855f7,#06b6d4);font-size:26px;font-weight:800}
+.profile-stats{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted)}
+.profile-stats strong{color:white}
+.search-results{display:grid;gap:10px;margin-top:15px;max-height:50vh;overflow:auto}
+.search-result{padding:13px;border:1px solid var(--border);border-radius:13px;background:#ffffff06}
+.setting-row{display:flex;align-items:center;justify-content:space-between;color:#cbd5e1;margin:12px 0}
+.setting-row input{width:18px;height:18px}
+.status-grid{grid-template-columns:repeat(4,1fr)}
+.empty-state{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:18px}
+@media(max-width:900px){.status-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.library-toolbar{flex-direction:column;align-items:stretch}.library-toolbar .input{max-width:none}.content-card{align-items:flex-start;flex-wrap:wrap}.content-actions{width:100%}.status-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 
 <body>
+
+<!--
+EDUNET IMPLEMENTATION NOTE:
+This single-file version provides a working browser-local prototype:
+accounts, profiles, library, uploads, downloads, likes, follows, search,
+settings, analytics and course content are stored in localStorage.
+For true multi-user live sharing across different devices/browsers, connect
+a backend such as Firebase/Supabase for authentication, database and file storage.
+-->
+
 
 <!-- STARTUP SCREEN -->
 <div id="startup">
@@ -625,17 +670,15 @@ footer strong {
     <ul>
         <li><a href="#home">Home</a></li>
         <li><a href="#courses">Courses</a></li>
-        <li><a href="#features">Features</a></li>
         <li><a href="#community">Community</a></li>
+        <li><a href="#library">Library</a></li>
+        <li><a href="#feed">Live Feed</a></li>
+        <li><a href="#status">My Status</a></li>
     </ul>
 
-    <div class="nav-buttons">
-        <button class="btn btn-outline" onclick="openModal('login')">
-            Log in
-        </button>
-        <button class="btn" onclick="openModal('register')">
-            Join Free
-        </button>
+    <div class="nav-buttons" id="navActions">
+        <button class="btn btn-outline" onclick="openModal('login')">Log in</button>
+        <button class="btn" onclick="openModal('register')">Join Free</button>
     </div>
 </nav>
 
@@ -727,7 +770,7 @@ footer strong {
                 <p>HTML, CSS, JavaScript, APIs and modern web development.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('Full Stack Web Development')">
+                    <button class="btn" onclick="openCourse('Full Stack Web Development')">
                         Learn
                     </button>
                 </div>
@@ -742,7 +785,7 @@ footer strong {
                 <p>Understand AI, machine learning and the future of technology.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('Artificial Intelligence')">
+                    <button class="btn" onclick="openCourse('Artificial Intelligence')">
                         Learn
                     </button>
                 </div>
@@ -757,7 +800,7 @@ footer strong {
                 <p>Design beautiful digital products users love.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('UI/UX Design')">
+                    <button class="btn" onclick="openCourse('UI/UX Design')">
                         Learn
                     </button>
                 </div>
@@ -772,7 +815,7 @@ footer strong {
                 <p>Learn Python, data analysis, visualization and statistics.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('Data Science')">
+                    <button class="btn" onclick="openCourse('Data Science')">
                         Learn
                     </button>
                 </div>
@@ -787,7 +830,7 @@ footer strong {
                 <p>Turn ideas into projects, products and businesses.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('Entrepreneurship')">
+                    <button class="btn" onclick="openCourse('Entrepreneurship')">
                         Learn
                     </button>
                 </div>
@@ -802,7 +845,7 @@ footer strong {
                 <p>Create powerful mobile applications from scratch.</p>
                 <div class="course-bottom">
                     <span class="rating">★★★★★</span>
-                    <button class="btn" onclick="courseMessage('App Development')">
+                    <button class="btn" onclick="openCourse('App Development')">
                         Learn
                     </button>
                 </div>
@@ -848,6 +891,93 @@ footer strong {
 
     </div>
 </section>
+
+
+<!-- COURSE CONTENT MODAL -->
+<div class="modal" id="courseModal">
+    <div class="modal-box course-modal-box">
+        <button class="close" onclick="closeCourse()">×</button>
+        <div class="tag" id="courseTag">COURSE</div>
+        <h2 id="courseTitle">Course</h2>
+        <p id="courseIntro"></p>
+        <div id="courseLessons" class="lesson-list"></div>
+    </div>
+</div>
+
+<!-- LIBRARY -->
+<section id="library" class="app-section">
+    <div class="section-heading">
+        <div class="tag">YOUR LIBRARY</div>
+        <h2>Your Library</h2>
+        <p>Every file uploaded from this browser account appears here.</p>
+    </div>
+    <div class="library-toolbar">
+        <input id="librarySearch" class="input" placeholder="Search your files..." oninput="renderLibrary()">
+        <button class="btn" onclick="document.getElementById('videoInput').click()">＋ Add File</button>
+    </div>
+    <div id="libraryList" class="content-list"></div>
+</section>
+
+<!-- LIVE FEED -->
+<section id="feed" class="app-section">
+    <div class="section-heading">
+        <div class="tag">LIVE COMMUNITY</div>
+        <h2>Live Uploads</h2>
+        <p>See public uploads saved on this device.</p>
+    </div>
+    <div id="feedList" class="content-list"></div>
+</section>
+
+<!-- MY STATUS -->
+<section id="status" class="app-section">
+    <div class="section-heading">
+        <div class="tag">CREATOR ANALYTICS</div>
+        <h2>My Status</h2>
+        <p>Track views, likes and followers for your uploads.</p>
+    </div>
+    <div class="dashboard-grid status-grid">
+        <div class="stat"><strong id="statusViews">0</strong><small>Total Views</small></div>
+        <div class="stat"><strong id="statusLikes">0</strong><small>Total Likes</small></div>
+        <div class="stat"><strong id="statusFollowers">0</strong><small>Followers</small></div>
+        <div class="stat"><strong id="statusUploads">0</strong><small>Uploads</small></div>
+    </div>
+    <div id="statusList" class="content-list"></div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="app-section" style="display:none">
+    <div class="section-heading">
+        <div class="tag">PROFILE</div>
+        <h2 id="profileHeading">Your Profile</h2>
+    </div>
+    <div id="profileCard" class="profile-card"></div>
+</section>
+
+<!-- SEARCH -->
+<div class="modal" id="searchModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeSearch()">×</button>
+        <h2>Search EduNet</h2>
+        <p>Search users and uploaded files.</p>
+        <input id="globalSearch" class="input" placeholder="Search..." oninput="runSearch()">
+        <div id="searchResults" class="search-results"></div>
+    </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="modal" id="settingsModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeSettings()">×</button>
+        <h2>Settings</h2>
+        <p>Manage your EduNet profile.</p>
+        <input id="settingsName" class="input" placeholder="Display name">
+        <input id="settingsBio" class="input" placeholder="Bio">
+        <input id="settingsEmail" class="input" type="email" placeholder="Email">
+        <label class="setting-row"><span>Public profile</span><input id="settingsPublic" type="checkbox" checked></label>
+        <button class="btn" style="width:100%;margin-top:15px" onclick="saveSettings()">Save Changes</button>
+        <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="clearLocalData()">Reset local demo data</button>
+    </div>
+</div>
 
 <!-- CTA -->
 <section class="cta" id="community">
@@ -902,7 +1032,7 @@ footer strong {
     <div class="upload-box">
         <h3>🚀 Creator Studio</h3>
         <p style="color:#94a3b8;margin-top:8px">
-            Upload your own educational video or learning material.
+            Upload a video, PDF, DOC or DOCX. It will appear in Your Library and the community feed.
         </p>
 
         <input id="videoInput" type="file"
@@ -910,9 +1040,11 @@ footer strong {
 
         <br>
 
-        <button class="btn" onclick="uploadContent()">
-            Upload Content
-        </button>
+        <label class="setting-row" style="margin:10px 0">
+            <span>Show this upload publicly in Live Feed</span>
+            <input id="publicUpload" type="checkbox" checked>
+        </label>
+        <button class="btn" onclick="uploadContent()">Upload Content</button>
 
         <p id="uploadStatus"
            style="margin-top:15px;color:#22c55e"></p>
@@ -1090,6 +1222,7 @@ function submitAuth() {
         "edunetUser",
         JSON.stringify(user)
     );
+    ensureProfile(user);
 
     closeModal();
 
@@ -1107,25 +1240,25 @@ function submitAuth() {
 ========================= */
 
 function showDashboard(user) {
-
-    document.getElementById("dashboard")
-        .style.display = "block";
-
-    document.getElementById("welcomeUser")
-        .textContent = "Welcome, " + user.name + "!";
-
-    document.getElementById("dashboard")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("welcomeUser").textContent = "Welcome, " + user.name + "!";
+    document.getElementById("navActions").innerHTML =
+        `<button class="btn btn-outline" onclick="openSearch()">🔎 Search</button>
+         <button class="btn btn-outline" onclick="openSettings()">⚙ Settings</button>
+         <button class="btn" onclick="viewProfile('${encodeURIComponent(user.email)}')">👤 Profile</button>`;
+    ensureProfile(user);
+    renderAll();
+    document.getElementById("dashboard").scrollIntoView({behavior:"smooth"});
 }
 
 function logout() {
 
     localStorage.removeItem("edunetUser");
-
-    document.getElementById("dashboard")
-        .style.display = "none";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("profile").style.display = "none";
+    document.getElementById("navActions").innerHTML =
+        `<button class="btn btn-outline" onclick="openModal('login')">Log in</button>
+         <button class="btn" onclick="openModal('register')">Join Free</button>`;
 
     window.scrollTo({
         top:0,
@@ -1136,68 +1269,262 @@ function logout() {
 /* =========================
    COURSE SYSTEM
 ========================= */
-
-function courseMessage(course) {
-
-    const user =
-        localStorage.getItem("edunetUser");
-
-    if(!user) {
-
-        alert(
-            "Create a free EduNet account to start " +
-            course + "."
-        );
-
-        openModal("register");
-
-        return;
+const courseData = {
+    "Full Stack Web Development": {
+        tag:"DEVELOPMENT",
+        intro:"Build modern websites and web apps from the ground up.",
+        lessons:[
+            ["01 · HTML Foundations","Learn semantic HTML, forms, links, images and accessible page structure."],
+            ["02 · CSS & Responsive Design","Understand layouts, Flexbox, Grid, responsive design and modern styling."],
+            ["03 · JavaScript Basics","Learn variables, functions, events, arrays and DOM manipulation."],
+            ["04 · APIs & Data","Understand JSON, fetch(), REST APIs and working with remote data."],
+            ["05 · Build a Project","Combine HTML, CSS and JavaScript into a complete web project."]
+        ]
+    },
+    "Artificial Intelligence": {
+        tag:"AI & ML",
+        intro:"Understand the foundations of AI, machine learning and responsible use of intelligent systems.",
+        lessons:[
+            ["01 · What is AI?","Learn what artificial intelligence is, where it is used and how intelligent systems solve problems."],
+            ["02 · Machine Learning","Understand datasets, features, labels, training and prediction."],
+            ["03 · Neural Networks","Learn the basic idea of layers, weights, activation and pattern recognition."],
+            ["04 · Generative AI","Explore how modern models can generate text, images and other content."],
+            ["05 · Responsible AI","Learn about accuracy, privacy, bias, safety and responsible AI use."]
+        ]
+    },
+    "UI/UX Design": {
+        tag:"DESIGN",
+        intro:"Design clear, useful and beautiful digital experiences.",
+        lessons:[
+            ["01 · UX Thinking","Understand users, problems, goals and user journeys."],
+            ["02 · Wireframes","Turn ideas into simple page structures before visual design."],
+            ["03 · Visual Design","Learn typography, spacing, hierarchy and consistent components."],
+            ["04 · Prototyping","Create interactive flows and test ideas before development."],
+            ["05 · Usability","Use feedback and simple tests to improve an interface."]
+        ]
+    },
+    "Data Science": {
+        tag:"DATA",
+        intro:"Learn the foundations of data analysis and visualization.",
+        lessons:[
+            ["01 · Data Basics","Understand datasets, variables, rows, columns and data quality."],
+            ["02 · Python for Data","Learn the programming concepts commonly used in data work."],
+            ["03 · Data Analysis","Clean, organize and explore datasets to find useful patterns."],
+            ["04 · Visualization","Present information using charts and clear visual explanations."],
+            ["05 · Statistics","Understand averages, variation, relationships and basic statistical thinking."]
+        ]
+    },
+    "Entrepreneurship": {
+        tag:"BUSINESS",
+        intro:"Turn a useful idea into a practical project.",
+        lessons:[
+            ["01 · Find a Problem","Identify real problems and understand the people affected by them."],
+            ["02 · Idea to Solution","Turn a problem into a clear product or service idea."],
+            ["03 · Business Model","Learn customers, value proposition, costs and revenue basics."],
+            ["04 · Marketing","Understand branding, communication and finding your first users."],
+            ["05 · Launch & Improve","Start small, collect feedback and continuously improve."]
+        ]
+    },
+    "App Development": {
+        tag:"MOBILE",
+        intro:"Learn the concepts behind modern mobile applications.",
+        lessons:[
+            ["01 · App Planning","Define users, features, screens and the app flow."],
+            ["02 · UI Components","Learn screens, navigation, buttons, forms and responsive layouts."],
+            ["03 · App Logic","Understand state, events and data handling."],
+            ["04 · Storage & APIs","Learn how apps save information and communicate with services."],
+            ["05 · Testing","Check usability, errors and performance before release."]
+        ]
     }
+};
 
-    alert(
-        "🎓 Opening " + course +
-        "\\n\\nYour learning session is ready!"
-    );
+function openCourse(course){
+    const user = localStorage.getItem("edunetUser");
+    if(!user){ alert("Create a free EduNet account to start this course."); openModal("register"); return; }
+    const c=courseData[course];
+    document.getElementById("courseTag").textContent=c.tag;
+    document.getElementById("courseTitle").textContent=course;
+    document.getElementById("courseIntro").textContent=c.intro;
+    document.getElementById("courseLessons").innerHTML=c.lessons.map((x,i)=>
+        `<div class="lesson"><strong>${escapeHTML(x[0])}</strong><span>${escapeHTML(x[1])}</span></div>`
+    ).join("");
+    document.getElementById("courseModal").classList.add("active");
 }
+function closeCourse(){document.getElementById("courseModal").classList.remove("active")}
 
 /* =========================
-   UPLOAD SYSTEM
+   LOCAL DATA / LIBRARY
 ========================= */
+function currentUser(){const u=localStorage.getItem("edunetUser");return u?JSON.parse(u):null}
+function getUploads(){return JSON.parse(localStorage.getItem("edunetUploads")||"[]")}
+function saveUploads(a){localStorage.setItem("edunetUploads",JSON.stringify(a))}
+function getProfiles(){return JSON.parse(localStorage.getItem("edunetProfiles")||"{}")}
+function saveProfiles(a){localStorage.setItem("edunetProfiles",JSON.stringify(a))}
+function fileIcon(name){const n=name.toLowerCase();if(n.endsWith(".pdf"))return "📕";if(/\.(doc|docx)$/.test(n))return "📘";if(/\.(mp4|webm|mov|avi)$/.test(n))return "🎬";return "📄"}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function fmtDate(v){return new Date(v).toLocaleString()}
 
-function uploadContent() {
+function ensureProfile(user){
+    const p=getProfiles();
+    if(!p[user.email]) p[user.email]={name:user.name,bio:"EduNet learner & creator",followers:0,following:false,public:true,views:0,likes:0};
+    saveProfiles(p);
+    return p[user.email];
+}
 
-    const file =
-        document.getElementById("videoInput").files[0];
+function uploadContent(){
+    const file=document.getElementById("videoInput").files[0];
+    const status=document.getElementById("uploadStatus");
+    const user=currentUser();
+    if(!user){status.style.color="#f87171";status.textContent="Please log in first.";return}
+    if(!file){status.style.color="#f87171";status.textContent="Please choose a video or document first.";return}
 
-    const status =
-        document.getElementById("uploadStatus");
-
-    if(!file) {
-
-        status.style.color = "#f87171";
-        status.textContent =
-            "Please choose a video or document first.";
-
+    // Demo limitation: localStorage stores metadata, not the binary file.
+    // The browser File object is converted to a downloadable data URL for small files.
+    if(file.size > 5*1024*1024){
+        status.style.color="#fbbf24";
+        status.textContent="File is larger than 5 MB. For a real multi-user upload, connect Firebase/Supabase storage.";
         return;
     }
+    const reader=new FileReader();
+    reader.onload=()=>{
+        const uploads=getUploads();
+        uploads.unshift({
+            id:Date.now().toString(36)+Math.random().toString(36).slice(2),
+            name:file.name,size:file.size,type:file.type||"application/octet-stream",
+            ownerEmail:user.email,ownerName:user.name,
+            public:document.getElementById("publicUpload").checked,
+            views:0,likes:0,likedBy:[],createdAt:Date.now(),dataUrl:reader.result
+        });
+        saveUploads(uploads);ensureProfile(user);
+        status.style.color="#22c55e";status.textContent="✓ Upload added to Your Library and Live Feed.";
+        document.getElementById("videoInput").value="";
+        renderAll();
+    };
+    reader.readAsDataURL(file);
+}
 
-    /*
-      Front-end demonstration only.
-      The file isn't permanently uploaded to a server.
-    */
+function renderLibrary(){
+    const user=currentUser(), box=document.getElementById("libraryList");
+    if(!box)return;
+    if(!user){box.innerHTML='<div class="empty-state">Log in to see Your Library.</div>';return}
+    const q=(document.getElementById("librarySearch")?.value||"").toLowerCase();
+    const items=getUploads().filter(x=>x.ownerEmail===user.email && x.name.toLowerCase().includes(q));
+    box.innerHTML=items.length?items.map(uploadCard).join(""):'<div class="empty-state">Your Library is empty. Upload your first file from Creator Studio.</div>';
+}
 
-    status.style.color = "#22c55e";
+function renderFeed(){
+    const box=document.getElementById("feedList");if(!box)return;
+    const items=getUploads().filter(x=>x.public);
+    box.innerHTML=items.length?items.map(uploadCard).join(""):'<div class="empty-state">No public uploads yet.</div>';
+}
 
-    status.textContent =
-        "✓ " + file.name +
-        " selected successfully!";
+function uploadCard(x){
+    const u=currentUser(), own=u&&u.email===x.ownerEmail;
+    const liked=u&&x.likedBy.includes(u.email);
+    return `<article class="content-card">
+        <div class="content-icon">${fileIcon(x.name)}</div>
+        <div class="content-main">
+            <h3>${escapeHTML(x.name)}</h3>
+            <p>Uploaded by <button class="small-btn" onclick="viewProfile('${encodeURIComponent(x.ownerEmail)}')">${escapeHTML(x.ownerName)}</button> · ${fmtDate(x.createdAt)}</p>
+            <p>👁 ${x.views} views · ❤️ ${x.likes} likes · ${x.public?"🌎 Public":"🔒 Private"}</p>
+        </div>
+        <div class="content-actions">
+            <button class="small-btn" onclick="downloadFile('${x.id}')">⬇ Download</button>
+            ${!own?`<button class="small-btn like-btn ${liked?"liked":""}" onclick="toggleLike('${x.id}')">❤️ ${liked?"Liked":"Like"}</button>`:""}
+            ${own?`<button class="small-btn" onclick="deleteUpload('${x.id}')">Delete</button>`:""}
+        </div>
+    </article>`;
+}
 
-    setTimeout(() => {
+function downloadFile(id){
+    const x=getUploads().find(a=>a.id===id);if(!x||!x.dataUrl){alert("This file needs server storage before it can be downloaded.");return}
+    x.views++;saveUploads(getUploads().map(a=>a.id===x.id?x:a));updateStatus();
+    const a=document.createElement("a");a.href=x.dataUrl;a.download=x.name;document.body.appendChild(a);a.click();a.remove();
+    renderAll();
+}
+function toggleLike(id){
+    const u=currentUser();if(!u){openModal("login");return}
+    const a=getUploads(),x=a.find(v=>v.id===id);if(!x)return;
+    x.likedBy=x.likedBy||[];
+    const i=x.likedBy.indexOf(u.email);
+    if(i>=0){x.likedBy.splice(i,1);x.likes=Math.max(0,x.likes-1)}else{x.likedBy.push(u.email);x.likes++}
+    saveUploads(a);renderAll();
+}
+function deleteUpload(id){
+    if(!confirm("Delete this upload from your local EduNet library?"))return;
+    saveUploads(getUploads().filter(x=>x.id!==id));renderAll();
+}
 
-        status.textContent =
-            "✓ Content added to your EduNet creator library.";
+function updateStatus(){
+    const u=currentUser();if(!u)return;
+    const mine=getUploads().filter(x=>x.ownerEmail===u.email),p=ensureProfile(u);
+    document.getElementById("statusViews").textContent=mine.reduce((s,x)=>s+x.views,0);
+    document.getElementById("statusLikes").textContent=mine.reduce((s,x)=>s+x.likes,0);
+    document.getElementById("statusFollowers").textContent=p.followers||0;
+    document.getElementById("statusUploads").textContent=mine.length;
+    document.getElementById("statusList").innerHTML=mine.length?mine.map(x=>`<article class="content-card"><div class="content-icon">${fileIcon(x.name)}</div><div class="content-main"><h3>${escapeHTML(x.name)}</h3><p>👁 ${x.views} views · ❤️ ${x.likes} likes · ${x.public?"Public":"Private"}</p></div></article>`).join(""):'<div class="empty-state">Upload content to see your analytics.</div>';
+}
 
-    }, 1200);
+function renderAll(){renderLibrary();renderFeed();updateStatus()}
+
+/* =========================
+   SEARCH / PROFILE / SETTINGS
+========================= */
+function openSearch(){document.getElementById("searchModal").classList.add("active");document.getElementById("globalSearch").focus();runSearch()}
+function closeSearch(){document.getElementById("searchModal").classList.remove("active")}
+function runSearch(){
+    const q=(document.getElementById("globalSearch").value||"").toLowerCase();
+    const profiles=getProfiles(),users=Object.entries(profiles).filter(([e,p])=>(e+" "+p.name+" "+(p.bio||"")).toLowerCase().includes(q));
+    const files=getUploads().filter(x=>x.public && x.name.toLowerCase().includes(q));
+    const box=document.getElementById("searchResults");
+    box.innerHTML=(users.map(([e,p])=>`<div class="search-result">👤 <strong>${escapeHTML(p.name)}</strong><br><small>${escapeHTML(e)}</small><br><button class="small-btn" onclick="viewProfile('${encodeURIComponent(e)}')">View profile</button></div>`).join("")+
+        files.map(x=>`<div class="search-result">${fileIcon(x.name)} <strong>${escapeHTML(x.name)}</strong><br><small>by ${escapeHTML(x.ownerName)}</small><br><button class="small-btn" onclick="downloadFile('${x.id}')">Download</button></div>`).join(""))||
+        '<div class="empty-state">No results.</div>';
+}
+function viewProfile(encoded){
+    const email=decodeURIComponent(encoded),profiles=getProfiles(),p=profiles[email];
+    if(!p)return;
+    const u=currentUser(),own=u&&u.email===email,files=getUploads().filter(x=>x.ownerEmail===email&&x.public);
+    document.getElementById("profile").style.display="block";
+    document.getElementById("profileHeading").textContent=p.name+" · Profile";
+    document.getElementById("profileCard").innerHTML=`<div class="profile-head"><div class="profile-avatar">${escapeHTML(p.name.charAt(0).toUpperCase())}</div><div><h2>${escapeHTML(p.name)}</h2><p style="color:#94a3b8">${escapeHTML(p.bio||"")}</p></div></div>
+    <div class="profile-stats"><span><strong>${p.followers||0}</strong> followers</span><span><strong>${files.length}</strong> public uploads</span></div>
+    ${!own&&u?`<button class="btn ${p.followersBy&&p.followersBy.includes(u.email)?"btn-outline":""}" style="margin-top:20px" onclick="toggleFollow('${encodeURIComponent(email)}')">${p.followersBy&&p.followersBy.includes(u.email)?"Following":"Follow"}</button>`:""}
+    <div style="margin-top:25px" class="content-list">${files.map(uploadCard).join("")||'<div class="empty-state">No public uploads.</div>'}</div>`;
+    document.getElementById("profile").scrollIntoView({behavior:"smooth"});
+    closeSearch();
+}
+function toggleFollow(encoded){
+    const u=currentUser();if(!u){openModal("login");return}
+    const email=decodeURIComponent(encoded),p=ensureProfile({email,name:email.split("@")[0]});
+    p.followersBy=p.followersBy||[];
+    const i=p.followersBy.indexOf(u.email);
+    if(i>=0){p.followersBy.splice(i,1);p.followers=Math.max(0,(p.followers||0)-1)}
+    else{p.followersBy.push(u.email);p.followers=(p.followers||0)+1}
+    const profiles=getProfiles();profiles[email]=p;saveProfiles(profiles);viewProfile(encoded);updateStatus();
+}
+function openSettings(){
+    const u=currentUser();if(!u){openModal("login");return}
+    const p=ensureProfile(u);
+    document.getElementById("settingsName").value=p.name||u.name;
+    document.getElementById("settingsBio").value=p.bio||"";
+    document.getElementById("settingsEmail").value=u.email;
+    document.getElementById("settingsPublic").checked=p.public!==false;
+    document.getElementById("settingsModal").classList.add("active");
+}
+function closeSettings(){document.getElementById("settingsModal").classList.remove("active")}
+function saveSettings(){
+    const u=currentUser();if(!u)return;
+    const profiles=getProfiles(),p=ensureProfile(u);
+    p.name=document.getElementById("settingsName").value.trim()||u.name;
+    p.bio=document.getElementById("settingsBio").value.trim();
+    p.public=document.getElementById("settingsPublic").checked;
+    u.name=p.name;localStorage.setItem("edunetUser",JSON.stringify(u));
+    profiles[u.email]=p;saveProfiles(profiles);closeSettings();showDashboard(u);renderAll();alert("Settings updated.");
+}
+function clearLocalData(){
+    if(!confirm("This removes the local demo account, uploads and settings from this browser. Continue?"))return;
+    localStorage.removeItem("edunetUser");localStorage.removeItem("edunetUploads");localStorage.removeItem("edunetProfiles");location.reload();
 }
 
 /* =========================
@@ -1205,25 +1532,18 @@ function uploadContent() {
 ========================= */
 
 window.addEventListener("DOMContentLoaded", () => {
-
-    const saved =
-        localStorage.getItem("edunetUser");
-
-    if(saved) {
-
-        const user = JSON.parse(saved);
-
-        /*
-          Keep dashboard available after refresh.
-        */
-        document.getElementById("dashboard")
-            .style.display = "block";
-
-        document.getElementById("welcomeUser")
-            .textContent =
-            "Welcome back, " + user.name + "!";
+    const saved=localStorage.getItem("edunetUser");
+    if(saved){
+        const user=JSON.parse(saved);
+        ensureProfile(user);
+        document.getElementById("dashboard").style.display="block";
+        document.getElementById("welcomeUser").textContent="Welcome back, "+user.name+"!";
+        document.getElementById("navActions").innerHTML =
+            `<button class="btn btn-outline" onclick="openSearch()">🔎 Search</button>
+             <button class="btn btn-outline" onclick="openSettings()">⚙ Settings</button>
+             <button class="btn" onclick="viewProfile('${encodeURIComponent(user.email)}')">👤 Profile</button>`;
     }
-
+    renderAll();
 });
 
 /* =========================
@@ -1238,6 +1558,11 @@ document.getElementById("authModal")
         }
 
     });
+
+
+document.getElementById("courseModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeCourse()});
+document.getElementById("searchModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeSearch()});
+document.getElementById("settingsModal").addEventListener("click",e=>{if(e.target===e.currentTarget)closeSettings()});
 
 </script>
 
